@@ -2,8 +2,13 @@
 //     .then(response => response.json())
 //     .then(element => { console.log(element) });
 
-document.getElementById("submit").addEventListener("click", priceValutaion);
+document.getElementById("submit").addEventListener("click", (event) => {
 
+
+
+    event.preventDefault();
+    priceValutaion();
+})
 let _data = {};
 
 function priceValutaion() {
@@ -12,9 +17,9 @@ function priceValutaion() {
     let area = parseInt(document.getElementById('area').value);
     let roomNumber = parseInt(document.getElementById('roomNumber').value);
     let zipCode = parseInt(document.getElementById('zipCode').value);
-    // let garden = document.getElementById('garden').value;
+    let garden = Boolean(document.getElementById('garden').checked);
     let gardenArea = parseInt(document.getElementById('gardenArea').value);
-    // let terrace = document.getElementById('terrace').value;
+    let terrace = Boolean(document.getElementById('terrace').value);
     let terraceArea = parseInt(document.getElementById('terraceArea').value);
     let facadesNumbers = parseInt(document.getElementById('facadesNumbers').value);
     let buildingState = document.getElementById('buildingState').value;
@@ -25,9 +30,9 @@ function priceValutaion() {
             "area": area,
             "rooms-number": roomNumber,
             "zip-code": zipCode,
-            // "garden": garden,
+            "garden": garden,
             "garden-area": gardenArea,
-            // "terrace": terrace,
+            "terrace": terrace,
             "terrace-area": terraceArea,
             "facades-number": facadesNumbers,
             "building-state": buildingState
@@ -35,15 +40,19 @@ function priceValutaion() {
 
     };
 
+
+
     fetch('https://corsed.herokuapp.com/predict', {
             method: "POST",
             body: JSON.stringify(_data),
             headers: { "Content-type": "application/json; charset=UTF-8" }
         })
         .then(response => response.json())
-        .then(json => console.log(json))
+        .then(json => {
+            console.log(json)
+            document.querySelector("#result").insertAdjacentHTML("afterend", '<p class="card-text">' + json.prediction.price + '€ </p>');
+        })
         .catch(err => console.log(err));
-    console.log(_data);
-    return _data
+
 
 }
